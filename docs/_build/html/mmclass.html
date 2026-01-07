@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mmclass module &mdash; mm2docs 1.0.0 ドキュメント</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=144c8c96"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=4755f45a"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="mmconfig module" href="mmconfig.html" />
+    <link rel="prev" title="mm2docs module" href="mm2docs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            mm2docs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="mm2docs.html">mm2docs module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">mmclass module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mmclass.MMNode"><code class="docutils literal notranslate"><span class="pre">MMNode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MMNode.level"><code class="docutils literal notranslate"><span class="pre">MMNode.level</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MMNode.note"><code class="docutils literal notranslate"><span class="pre">MMNode.note</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MMNode.text"><code class="docutils literal notranslate"><span class="pre">MMNode.text</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mmclass.MdConfig"><code class="docutils literal notranslate"><span class="pre">MdConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MdConfig.escape_strs"><code class="docutils literal notranslate"><span class="pre">MdConfig.escape_strs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MdConfig.header"><code class="docutils literal notranslate"><span class="pre">MdConfig.header</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MdConfig.sec_close"><code class="docutils literal notranslate"><span class="pre">MdConfig.sec_close</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MdConfig.section_reason"><code class="docutils literal notranslate"><span class="pre">MdConfig.section_reason</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.MdConfig.section_remark"><code class="docutils literal notranslate"><span class="pre">MdConfig.section_remark</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mmclass.USDMConfig"><code class="docutils literal notranslate"><span class="pre">USDMConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.cell_style"><code class="docutils literal notranslate"><span class="pre">USDMConfig.cell_style</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_grp"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_grp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_module_start"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_module_start</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_reason"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_reason</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_remark"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_remark</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_req"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_req</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_spec"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_spec</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.col_sub"><code class="docutils literal notranslate"><span class="pre">USDMConfig.col_sub</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.excel_file_ext"><code class="docutils literal notranslate"><span class="pre">USDMConfig.excel_file_ext</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.freeze_panes"><code class="docutils literal notranslate"><span class="pre">USDMConfig.freeze_panes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.lv1_title_cell"><code class="docutils literal notranslate"><span class="pre">USDMConfig.lv1_title_cell</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.prohibit_char"><code class="docutils literal notranslate"><span class="pre">USDMConfig.prohibit_char</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.row_start"><code class="docutils literal notranslate"><span class="pre">USDMConfig.row_start</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.sub_txt"><code class="docutils literal notranslate"><span class="pre">USDMConfig.sub_txt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.tmpl_file"><code class="docutils literal notranslate"><span class="pre">USDMConfig.tmpl_file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.tmpl_sheet"><code class="docutils literal notranslate"><span class="pre">USDMConfig.tmpl_sheet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.usdm_file_pfx"><code class="docutils literal notranslate"><span class="pre">USDMConfig.usdm_file_pfx</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.USDMConfig.usdm_sheet"><code class="docutils literal notranslate"><span class="pre">USDMConfig.usdm_sheet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mmclass.WordConfig"><code class="docutils literal notranslate"><span class="pre">WordConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.WordConfig.file_name"><code class="docutils literal notranslate"><span class="pre">WordConfig.file_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.WordConfig.head_lv_offset"><code class="docutils literal notranslate"><span class="pre">WordConfig.head_lv_offset</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.WordConfig.max_head_lv"><code class="docutils literal notranslate"><span class="pre">WordConfig.max_head_lv</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.WordConfig.tmpl_name"><code class="docutils literal notranslate"><span class="pre">WordConfig.tmpl_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.WordConfig.txt_reason"><code class="docutils literal notranslate"><span class="pre">WordConfig.txt_reason</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmclass.WordConfig.txt_remark"><code class="docutils literal notranslate"><span class="pre">WordConfig.txt_remark</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mmconfig.html">mmconfig module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mm2docs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">mmclass module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/mmclass.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-mmclass">
+<span id="mmclass-module"></span><h1>mmclass module<a class="headerlink" href="#module-mmclass" title="Link to this heading"></a></h1>
+<p>mmclass.py</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mmclass.MMNode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mmclass.</span></span><span class="sig-name descname"><span class="pre">MMNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mmclass.html#MMNode"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#mmclass.MMNode" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Mindmapのノードデータ</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MMNode.level">
+<span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#mmclass.MMNode.level" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MMNode.note">
+<span class="sig-name descname"><span class="pre">note</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#mmclass.MMNode.note" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MMNode.text">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#mmclass.MMNode.text" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mmclass.MdConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mmclass.</span></span><span class="sig-name descname"><span class="pre">MdConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'&lt;link</span> <span class="pre">rel=&quot;stylesheet&quot;</span> <span class="pre">href=&quot;style.css&quot;</span> <span class="pre">/&gt;\n\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_remark:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'&lt;section</span> <span class="pre">class=&quot;remark&quot;&gt;\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_reason:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'&lt;section</span> <span class="pre">class=&quot;reason&quot;&gt;\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sec_close:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'&lt;/section&gt;\n\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">escape_strs:</span> <span class="pre">~typing.List[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mmclass.html#MdConfig"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#mmclass.MdConfig" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Markdown出力用設定</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MdConfig.escape_strs">
+<span class="sig-name descname"><span class="pre">escape_strs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mmclass.MdConfig.escape_strs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MdConfig.header">
+<span class="sig-name descname"><span class="pre">header</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;link</span> <span class="pre">rel=&quot;stylesheet&quot;</span> <span class="pre">href=&quot;style.css&quot;</span> <span class="pre">/&gt;\n\n'</span></em><a class="headerlink" href="#mmclass.MdConfig.header" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MdConfig.sec_close">
+<span class="sig-name descname"><span class="pre">sec_close</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;/section&gt;\n\n'</span></em><a class="headerlink" href="#mmclass.MdConfig.sec_close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MdConfig.section_reason">
+<span class="sig-name descname"><span class="pre">section_reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;section</span> <span class="pre">class=&quot;reason&quot;&gt;\n'</span></em><a class="headerlink" href="#mmclass.MdConfig.section_reason" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.MdConfig.section_remark">
+<span class="sig-name descname"><span class="pre">section_remark</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'&lt;section</span> <span class="pre">class=&quot;remark&quot;&gt;\n'</span></em><a class="headerlink" href="#mmclass.MdConfig.section_remark" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mmclass.USDMConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mmclass.</span></span><span class="sig-name descname"><span class="pre">USDMConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excel_file_ext:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'*.xlsx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usdm_file_pfx:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_USDM.xlsx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usdm_sheet:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'USDM'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpl_file:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'./templates/USDM_Template.xlsx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpl_sheet:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Template'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lv1_title_cell:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'B1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_start:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_req:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_sub:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_grp:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_reason:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_remark:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_spec:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_module_start:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freeze_panes:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'F4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prohibit_char:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&quot;[</span> <span class="pre">'*/:?[\\]`’＊／：？［＼］￥]+&quot;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_txt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_style:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.List[~typing.List[~typing.Any]]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mmclass.html#USDMConfig"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#mmclass.USDMConfig" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>USDM出力用設定</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.cell_style">
+<span class="sig-name descname"><span class="pre">cell_style</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mmclass.USDMConfig.cell_style" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_grp">
+<span class="sig-name descname"><span class="pre">col_grp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_grp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_module_start">
+<span class="sig-name descname"><span class="pre">col_module_start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_module_start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_reason">
+<span class="sig-name descname"><span class="pre">col_reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_reason" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_remark">
+<span class="sig-name descname"><span class="pre">col_remark</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_remark" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_req">
+<span class="sig-name descname"><span class="pre">col_req</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_req" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_spec">
+<span class="sig-name descname"><span class="pre">col_spec</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_spec" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.col_sub">
+<span class="sig-name descname"><span class="pre">col_sub</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#mmclass.USDMConfig.col_sub" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.excel_file_ext">
+<span class="sig-name descname"><span class="pre">excel_file_ext</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'*.xlsx'</span></em><a class="headerlink" href="#mmclass.USDMConfig.excel_file_ext" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.freeze_panes">
+<span class="sig-name descname"><span class="pre">freeze_panes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'F4'</span></em><a class="headerlink" href="#mmclass.USDMConfig.freeze_panes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.lv1_title_cell">
+<span class="sig-name descname"><span class="pre">lv1_title_cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'B1'</span></em><a class="headerlink" href="#mmclass.USDMConfig.lv1_title_cell" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.prohibit_char">
+<span class="sig-name descname"><span class="pre">prohibit_char</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&quot;[</span> <span class="pre">'*/:?[\\]`’＊／：？［＼］￥]+&quot;</span></em><a class="headerlink" href="#mmclass.USDMConfig.prohibit_char" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.row_start">
+<span class="sig-name descname"><span class="pre">row_start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mmclass.USDMConfig.row_start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.sub_txt">
+<span class="sig-name descname"><span class="pre">sub_txt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_'</span></em><a class="headerlink" href="#mmclass.USDMConfig.sub_txt" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.tmpl_file">
+<span class="sig-name descname"><span class="pre">tmpl_file</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./templates/USDM_Template.xlsx'</span></em><a class="headerlink" href="#mmclass.USDMConfig.tmpl_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.tmpl_sheet">
+<span class="sig-name descname"><span class="pre">tmpl_sheet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Template'</span></em><a class="headerlink" href="#mmclass.USDMConfig.tmpl_sheet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.usdm_file_pfx">
+<span class="sig-name descname"><span class="pre">usdm_file_pfx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_USDM.xlsx'</span></em><a class="headerlink" href="#mmclass.USDMConfig.usdm_file_pfx" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.USDMConfig.usdm_sheet">
+<span class="sig-name descname"><span class="pre">usdm_sheet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'USDM'</span></em><a class="headerlink" href="#mmclass.USDMConfig.usdm_sheet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mmclass.WordConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mmclass.</span></span><span class="sig-name descname"><span class="pre">WordConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmpl_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./templates/SpecTemplate.docx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'機能仕様書_r0.docx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_head_lv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_lv_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txt_remark</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Normal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txt_reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Normal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mmclass.html#WordConfig"><span class="viewcode-link"><span class="pre">[ソース]</span></span></a><a class="headerlink" href="#mmclass.WordConfig" title="Link to this definition"></a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Word出力用設定</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.WordConfig.file_name">
+<span class="sig-name descname"><span class="pre">file_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'機能仕様書_r0.docx'</span></em><a class="headerlink" href="#mmclass.WordConfig.file_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.WordConfig.head_lv_offset">
+<span class="sig-name descname"><span class="pre">head_lv_offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#mmclass.WordConfig.head_lv_offset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.WordConfig.max_head_lv">
+<span class="sig-name descname"><span class="pre">max_head_lv</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#mmclass.WordConfig.max_head_lv" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.WordConfig.tmpl_name">
+<span class="sig-name descname"><span class="pre">tmpl_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./templates/SpecTemplate.docx'</span></em><a class="headerlink" href="#mmclass.WordConfig.tmpl_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.WordConfig.txt_reason">
+<span class="sig-name descname"><span class="pre">txt_reason</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Normal'</span></em><a class="headerlink" href="#mmclass.WordConfig.txt_reason" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mmclass.WordConfig.txt_remark">
+<span class="sig-name descname"><span class="pre">txt_remark</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Normal'</span></em><a class="headerlink" href="#mmclass.WordConfig.txt_remark" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mm2docs.html" class="btn btn-neutral float-left" title="mm2docs module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mmconfig.html" class="btn btn-neutral float-right" title="mmconfig module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, N.NAKAGAWA.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

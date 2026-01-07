@@ -1,0 +1,48 @@
+@charset “utf-8”;
+.remark {
+    margin: 1em 2em 1em 2em;
+    padding: 0.6em 0.6em 0em 0.6em;
+    border-top: 1px dashed #cccccc;
+    border-bottom: 1px dashed #cccccc;
+}
+
+.reason {
+    position: relative;
+    margin: 1em 2em 1em 2em;
+    padding: 2em 0.6em 0em 0.6em;
+    box-sizing: border-box;
+    color: #666;
+    border: solid 1px #3cf;
+    /*border-left-width: 1px;*/
+}
+
+.reason:before{
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 0.4em 0.6em 0.4em 0.6em;
+    content: "理由";
+    font-family: sans-serif;
+    color: #fff;
+    background: #3cf;
+    font-size: 0.8em;
+    line-height: 1;
+}
+
+/*
+.reason p {
+    position: relative;
+    padding: 0;
+    margin: 10px 0;
+    z-index: 3;
+    line-height: 1.7;
+}
+
+.reason cite {
+    display: block;
+    text-align: right;
+    color: #888888;
+    font-size: 0.9em;
+}
+*/

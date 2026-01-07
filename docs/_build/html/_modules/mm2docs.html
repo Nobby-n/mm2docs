@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mm2docs &mdash; mm2docs 1.0.0 ドキュメント</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=144c8c96"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=4755f45a"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            mm2docs
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mm2docs.html">mm2docs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmclass.html">mmclass module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmconfig.html">mmconfig module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mm2docs</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">モジュールコード</a></li>
+      <li class="breadcrumb-item active">mm2docs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>mm2docs のソースコード</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;mm2docs.py:</span>
+
+<span class="sd">## 基本機能</span>
+<span class="sd">Mindmap (Xmind, FreePlane) から USDM (Excel), Word, Markdown 形式のドキュメントを生成する。</span>
+
+<span class="sd">## 利用方法</span>
+<span class="sd">README.md 参照</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">openpyxl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_column_letter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xmind</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">load_xmind_sdk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">docx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Document</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">mmconfig</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cfg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mmclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">MMNode</span>
+
+<div class="viewcode-block" id="MMConverter">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.MMConverter">[ドキュメント]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MMConverter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mindmapデータを読み取り、各種ドキュメントに変換するクラス</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mm_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mm_file : str</span>
+<span class="sd">            Source Mindmap file path (.xmind or .mm)</span>
+<span class="sd">        template : str</span>
+<span class="sd">            Template file path (.xlsx or .docx)</span>
+<span class="sd">        output : str</span>
+<span class="sd">            Output file path (.xlsx, .docx, or .md)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mm_file</span> <span class="o">=</span> <span class="n">mm_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MMNode</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">doc_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># Word/MD用 [text, level]</span>
+
+<div class="viewcode-block" id="MMConverter.load_mm_data">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.MMConverter.load_mm_data">[ドキュメント]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_mm_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mindmapファイルからデータを読み込む</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mm_file</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.xmind&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_xmind</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.mm&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_freeplane</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;サポートされていない拡張子です: </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_xmind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Xmindファイルを読み込む</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">wb</span> <span class="o">=</span> <span class="n">load_xmind_sdk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mm_file</span><span class="p">)</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">getPrimarySheet</span><span class="p">()</span>
+            <span class="n">rt</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">getRootTopic</span><span class="p">()</span>
+            
+            <span class="n">raw_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_xmind_nodes</span><span class="p">(</span><span class="n">rt</span><span class="o">.</span><span class="n">getSubTopics</span><span class="p">(),</span> <span class="n">raw_nodes</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_raw_nodes</span><span class="p">(</span><span class="n">raw_nodes</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Xmindファイルの読み込みに失敗しました: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_all_xmind_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topics</span><span class="p">,</span> <span class="n">raw_nodes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Xmindのトピックを再帰的に取得してリストに追加する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        topics : list</span>
+<span class="sd">            XMindのトピックオブジェクトのリスト</span>
+<span class="sd">        raw_nodes : list</span>
+<span class="sd">            取得したノードのテキストを格納するリスト</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">topic</span> <span class="ow">in</span> <span class="n">topics</span><span class="p">:</span>
+            <span class="n">raw_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">topic</span><span class="o">.</span><span class="n">getTitle</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">topic</span><span class="o">.</span><span class="n">getSubTopics</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_xmind_nodes</span><span class="p">(</span><span class="n">topic</span><span class="o">.</span><span class="n">getSubTopics</span><span class="p">(),</span> <span class="n">raw_nodes</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_freeplane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;FreePlane (.mm) ファイルを読み込む</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mm_file</span><span class="p">)</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+            
+            <span class="n">raw_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># FreePlaneのルートノードの下のノードから取得開始</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//node&#39;</span><span class="p">):</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TEXT&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+                    <span class="n">raw_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_raw_nodes</span><span class="p">(</span><span class="n">raw_nodes</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FreePlaneファイルの読み込みに失敗しました: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_raw_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;生のノード文字列を解析してレベルを決定し、MMNodeリストに格納する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        raw_nodes : List[str]</span>
+<span class="sd">            解析対象のノードテキストのリスト</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stcomment</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">node_text</span> <span class="ow">in</span> <span class="n">raw_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node_text</span><span class="p">:</span>
+                <span class="k">continue</span>
+                
+            <span class="k">for</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">PTNLV</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">node_text</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                    <span class="c1"># match/case を使用してリファクタリング</span>
+                    <span class="k">match</span> <span class="n">level</span><span class="p">:</span>
+                        <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVNOTEE</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">stcomment</span><span class="p">:</span>
+                                <span class="n">stcomment</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">continue</span>
+                        <span class="k">case</span><span class="w"> </span><span class="k">_</span> <span class="k">if</span> <span class="n">stcomment</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVNOTE</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVNOTES</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">stcomment</span><span class="p">:</span>
+                                <span class="n">stcomment</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">continue</span>
+                        <span class="k">case</span> <span class="n">l</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV4</span><span class="p">:</span>
+                            <span class="c1"># 見出しレベル1無しで下位が現れたら補完</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV1</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="s2">&quot;xxxx xxxx&quot;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV1</span><span class="p">))</span>
+                            
+                            <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">node_text</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
+                        <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                                <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">node_text</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">))</span>
+                        <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                                <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">node_text</span>
+                                <span class="c1"># 連続する備考は連結</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">))</span>
+                        <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVSPEC</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">node_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVSPEC</span><span class="p">))</span>
+                    <span class="k">break</span>
+
+<div class="viewcode-block" id="MMConverter.save">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.MMConverter.save">[ドキュメント]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;指定された拡張子に応じて保存処理を行う</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">match</span> <span class="n">ext</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_xlsx</span><span class="p">()</span>
+            <span class="k">case</span> <span class="s1">&#39;.docx&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_docx</span><span class="p">()</span>
+            <span class="k">case</span> <span class="s1">&#39;.md&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_md</span><span class="p">()</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;サポートされていない出力形式です: </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="MMConverter.save_xlsx">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.MMConverter.save_xlsx">[ドキュメント]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_xlsx</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;USDM Excel形式で保存</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Excel (USDM) 出力中: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;エラー: テンプレートファイルは .xlsx 形式である必要があります。&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+            <span class="n">tmpl_sheet</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">tmpl_sheet</span><span class="p">]</span>
+            
+            <span class="c1"># 書式情報の取得</span>
+            <span class="n">default_styles</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tmpl_sheet</span><span class="o">.</span><span class="n">max_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">default_styles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmpl_sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">row_start</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">_style</span><span class="p">)</span>
+
+            <span class="n">scnt</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">sn_list</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="c1"># データの転記</span>
+            <span class="n">current_sheet</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">rownum</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">row_start</span>
+            <span class="n">id_cnt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">sn</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="k">match</span> <span class="n">node</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV1</span><span class="p">:</span>
+                        <span class="c1"># 新しいシートの作成</span>
+                        <span class="n">current_sheet</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">copy_worksheet</span><span class="p">(</span><span class="n">tmpl_sheet</span><span class="p">)</span>
+                        
+                        <span class="c1"># シート名設定</span>
+                        <span class="n">kw</span><span class="p">,</span> <span class="n">lv1_txt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lv1_info</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                        <span class="n">sn</span> <span class="o">=</span> <span class="n">kw</span>
+                        <span class="k">if</span> <span class="n">sn</span> <span class="ow">in</span> <span class="n">sn_list</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">):</span>
+                                <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sn</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sn_list</span><span class="p">:</span>
+                                    <span class="n">sn</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sn</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="k">break</span>
+                        <span class="n">sn_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+                        
+                        <span class="n">current_sheet</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">usdm_sheet</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">sn</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">wb</span><span class="o">.</span><span class="n">move_sheet</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">offset</span><span class="o">=-</span><span class="n">wb</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">)</span> <span class="o">+</span> <span class="n">scnt</span><span class="p">)</span>
+                        <span class="n">scnt</span> <span class="o">+=</span> <span class="mi">1</span>
+                        
+                        <span class="c1"># 初期化</span>
+                        <span class="n">current_sheet</span><span class="o">.</span><span class="n">delete_rows</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">row_start</span><span class="p">,</span> <span class="n">current_sheet</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="n">current_sheet</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">lv1_title_cell</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">lv1_txt</span>
+                        <span class="n">id_cnt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                        <span class="n">rownum</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">row_start</span> <span class="o">-</span> <span class="mi">1</span>
+                        
+                        <span class="c1"># ウィンドウ枠の固定</span>
+                        <span class="n">current_sheet</span><span class="o">.</span><span class="n">freeze_panes</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">freeze_panes</span>
+
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">current_sheet</span><span class="p">:</span>
+                            <span class="c1"># 直前の行に備考をセット</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_set_cell</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_remark</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREMARK</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+                            <span class="n">rownum</span> <span class="o">-=</span> <span class="mi">1</span> <span class="c1"># 備考は行を増やさない</span>
+
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV2</span><span class="p">:</span>
+                        <span class="n">id_cnt</span> <span class="o">=</span> <span class="p">[</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_req</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREQ2</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_req</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sn</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_req</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">text</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_set_row</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREQ2</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV3</span><span class="p">:</span>
+                        <span class="n">id_cnt</span> <span class="o">=</span> <span class="p">[</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">id_cnt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_sub</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREQ3</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_sub</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sn</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_sub</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">text</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_set_row</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREQ3</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV4</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_grp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;＜</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">＞&quot;</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_set_row</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREQ4</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_reason</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREASON</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_reason</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">text</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_set_row</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTREASON</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVSPEC</span><span class="p">:</span>
+                        <span class="n">id_cnt</span> <span class="o">=</span> <span class="p">[</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">id_cnt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">id_cnt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_spec</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sn</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cnt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">data</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_spec</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">text</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_set_row</span><span class="p">(</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">rownum</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">TXTSPEC</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">current_sheet</span><span class="p">:</span>
+                    <span class="c1"># 最初のデータ行（4行目）の高さ自動調整修正</span>
+                    <span class="k">if</span> <span class="n">rownum</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">current_sheet</span><span class="o">.</span><span class="n">row_dimensions</span><span class="p">[</span><span class="n">rownum</span><span class="p">]</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">rownum</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Excel出力中にエラーが発生しました: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_lv1_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;大要求レベルのノード情報をキーワードとテキストに分割する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        txt : str</span>
+<span class="sd">            大要求ノードのテキスト</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        kw : str</span>
+<span class="sd">            キーワード（シート名に使用、禁止文字置換済み）</span>
+<span class="sd">        lv1_txt : str</span>
+<span class="sd">            大要求の内容テキスト</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">kw_raw</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">lv1_txt</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">kw_raw</span> <span class="o">=</span> <span class="n">lv1_txt</span> <span class="o">=</span> <span class="n">txt</span>
+        
+        <span class="n">kw</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">prohibit_char</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">sub_txt</span><span class="p">,</span> <span class="n">kw_raw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kw</span><span class="p">,</span> <span class="n">lv1_txt</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">rnum</span><span class="p">,</span> <span class="n">rdata</span><span class="p">,</span> <span class="n">lv_name</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Excelシートに1行分のデータを書き込む</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sheet : openpyxl.worksheet.worksheet.Worksheet</span>
+<span class="sd">            書き込み対象のシート</span>
+<span class="sd">        rnum : int</span>
+<span class="sd">            行番号</span>
+<span class="sd">        rdata : list</span>
+<span class="sd">            1行分のデータリスト</span>
+<span class="sd">        lv_name : str</span>
+<span class="sd">            レベル名（書式決定用）</span>
+<span class="sd">        default_styles : list</span>
+<span class="sd">            テンプレートから取得したデフォルト書式のリスト</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cn</span><span class="p">,</span> <span class="n">txt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rdata</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_cell</span><span class="p">(</span><span class="n">sheet</span><span class="p">,</span> <span class="n">rnum</span><span class="p">,</span> <span class="n">cn</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">lv_name</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">)</span>
+        <span class="c1"># 関連モジュール列の書式セット</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">style</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">default_styles</span><span class="p">[</span><span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_module_start</span><span class="o">-</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="n">cnum</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">col_module_start</span> <span class="o">+</span> <span class="n">i</span>
+            <span class="n">sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">rnum</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">cnum</span><span class="p">)</span><span class="o">.</span><span class="n">_style</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">rnum</span><span class="p">,</span> <span class="n">cnum</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">lv_name</span><span class="p">,</span> <span class="n">default_styles</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Excelシートの特定のセルにデータと書式をセットする</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sheet : openpyxl.worksheet.worksheet.Worksheet</span>
+<span class="sd">            書き込み対象のシート</span>
+<span class="sd">        rnum : int</span>
+<span class="sd">            行番号</span>
+<span class="sd">        cnum : int</span>
+<span class="sd">            列番号</span>
+<span class="sd">        txt : str</span>
+<span class="sd">            セットするテキスト</span>
+<span class="sd">        lv_name : str</span>
+<span class="sd">            レベル名（書式決定用）</span>
+<span class="sd">        default_styles : list</span>
+<span class="sd">            テンプレートから取得したデフォルト書式のリスト</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">sheet</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">rnum</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">cnum</span><span class="p">)</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">txt</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">_style</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">default_styles</span><span class="p">[</span><span class="n">cnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">lv_name</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">cell_style</span><span class="p">:</span>
+            <span class="n">styles</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">cell_style</span><span class="p">[</span><span class="n">lv_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">cnum</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">styles</span><span class="p">):</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">styles</span><span class="p">[</span><span class="n">cnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">styles</span><span class="p">[</span><span class="n">cnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MMConverter.save_docx">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.MMConverter.save_docx">[ドキュメント]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_docx</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Word形式で保存</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Word出力中: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;.docx&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;エラー: テンプレートファイルは .docx 形式である必要があります。&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="k">match</span> <span class="n">node</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
+                    <span class="k">case</span> <span class="n">l</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">max_head_lv</span><span class="p">:</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="c1"># 見出しの前に改行</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">l</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">head_lv_offset</span><span class="p">)</span>
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">:</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">txt_remark</span><span class="p">)</span>
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">:</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">txt_reason</span><span class="p">)</span>
+                    <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            
+            <span class="n">doc</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Word出力中にエラーが発生しました: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="MMConverter.save_md">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.MMConverter.save_md">[ドキュメント]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_md</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Markdown形式で保存</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Markdown出力中: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">md_text</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">header</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escape_md</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="c1"># ノード内の改行を &lt;br /&gt; に変換</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;br /&gt;&#39;</span><span class="p">)</span>
+                
+                <span class="k">match</span> <span class="n">node</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
+                    <span class="k">case</span> <span class="n">l</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">max_head_lv</span><span class="p">:</span>
+                        <span class="n">md_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;#&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">l</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">:</span>
+                        <span class="n">md_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">section_remark</span><span class="si">}{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">sec_close</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">:</span>
+                        <span class="n">md_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">section_reason</span><span class="si">}{</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">sec_close</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                        <span class="n">md_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+            
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">md_text</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Markdown出力中にエラーが発生しました: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_escape_md</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Markdownの特殊文字をエスケープする</span>
+<span class="sd">        ただし、バックトークンで囲まれた部分は除外する</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        txt : str</span>
+<span class="sd">            エスケープ対象のテキスト</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            エスケープ後のテキスト</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># バックトークンで囲まれた部分はエスケープしない</span>
+        <span class="c1"># それ以外の部分をエスケープ対象文字列で置換する</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(`[^`]*`)&#39;</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)):</span>
+            <span class="c1"># 偶数番目の要素（バックトークンの外側）のみエスケープ処理を行う</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">escape_strs</span><span class="p">:</span>
+                    <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../mm2docs.html#mm2docs.main">[ドキュメント]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Mindmap to Documents Converter&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Source Mindmap file (.xmind or .mm)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-t&#39;</span><span class="p">,</span> <span class="s1">&#39;--template&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Template file (.xlsx or .docx)&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="s1">&#39;--output&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Output file (.xlsx, .docx, or .md)&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c1"># パス解決</span>
+    <span class="n">mm_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">mm</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">mm_file</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;エラー: 指定されたファイルが見つかりません: </span><span class="si">{</span><span class="n">mm_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">output</span><span class="p">:</span>
+        <span class="c1"># デフォルト出力先の設定</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">mm_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="s2">&quot;_USDM.xlsx&quot;</span> <span class="c1"># デフォルトはExcel</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">template</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">template</span><span class="p">:</span>
+        <span class="c1"># 出力形式に応じたデフォルトテンプレート</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">output</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">:</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">usdm_cfg</span><span class="o">.</span><span class="n">tmpl_file</span>
+        <span class="k">elif</span> <span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.docx&#39;</span><span class="p">:</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">tmpl_name</span>
+
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">MMConverter</span><span class="p">(</span><span class="n">mm_file</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">converter</span><span class="o">.</span><span class="n">load_mm_data</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">converter</span><span class="o">.</span><span class="n">save</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;変換完了！&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;変換失敗。&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mindmapの読み込みに失敗しました。&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, N.NAKAGAWA.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

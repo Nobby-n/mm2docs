@@ -1,0 +1,14 @@
+photothumb.db
+*.ipynb
+*.zip
+# *.xmind
+# *.mm
+# *.xlsx
+# *.docx
+
+__pycache__/
+images/originals/
+memo/
+testdata/
+.vscode/
+*old/
