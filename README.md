@@ -2,14 +2,14 @@
 
 ## 概要
 
-Mindmap (Xmind, FreePlane) から、USDM形式のExcel、機能仕様書形式のWord、およびMarkDown形式のドキュメントを自動生成するツールです。
+Mindmap (Xmind, FreePlane) から、USDM形式のExcel、仕様書形式のWord、およびMarkDown形式のドキュメントを自動生成するツールです。
 
 ## 特徴
 
 - **複数のMindmap形式に対応**: Xmind (.xmind) および FreePlane (.mm) からデータを抽出可能。
 - **3種類の出力形式**: 出力ファイルの拡張子 (.xlsx, .docx, .md) に応じて適切なフォーマットで出力。
 - **USDM出力**: 要件定義手法であるUSDM形式のExcelファイルを生成。
-- **Word出力**: テンプレートに基づいた機能仕様書の雛形を生成。
+- **Word出力**: テンプレートに基づいた仕様書の雛形を生成。
 - **Markdown出力**: AIプロンプトやドキュメント管理に便利なMarkdown形式を生成。
 
 ## インストール
@@ -17,7 +17,7 @@ Mindmap (Xmind, FreePlane) から、USDM形式のExcel、機能仕様書形式�
 Python 3.12以上が必要です。必要なライブラリをインストールしてください。
 
 ```bash
-pip install openpyxl xmind-sdk-python python-docx
+pip install openpyxl xmind-sdk python-docx
 ```
 
 ## 利用方法
