@@ -33,6 +33,23 @@ TXTREASON = '理由'
 TXTREMARK = '備考'
 
 usdm_cfg = USDMConfig(
+    excel_file_ext='*.xlsx',
+    usdm_file_pfx='_USDM.xlsx',
+    usdm_sheet='USDM',
+    tmpl_file='./templates/USDM_Template.xlsx',
+    tmpl_sheet='Template',
+    lv1_title_cell='B1',
+    row_start=4,
+    col_req=2,
+    col_sub=3,
+    col_grp=4,
+    col_reason=5,
+    col_remark=7,
+    col_spec=5,
+    col_module_start=9,
+    freeze_panes='F4',
+    prohibit_char=r"[ '*/:?[\]`’＊／：？［＼］￥]+",
+    sub_txt='_',
     cell_style={
         TXTREQ2: [[NONCOLOR, NONBOLD], [REQCOLOR, FBOLD], [REQCOLOR, FBOLD], [REQCOLOR, FBOLD],
                   [REQCOLOR, FBOLD], [REQCOLOR, NONBOLD], [REQCOLOR, NONBOLD]],
@@ -47,8 +64,22 @@ usdm_cfg = USDMConfig(
     }
 )
 
-word_cfg = WordConfig()
-md_cfg = MdConfig()
+word_cfg = WordConfig(
+    tmpl_name='./templates/SpecTemplate.docx',
+    file_name='仕様書_r0.docx',
+    max_head_lv=4,
+    head_lv_offset=1,
+    txt_remark=TXTREMARK,
+    txt_reason=TXTREASON
+)
+
+md_cfg = MdConfig(
+    header='<link rel="stylesheet" href="style.css" />\n\n',
+    section_remark='<section class="remark">\n',
+    section_reason='<section class="reason">\n',
+    sec_close='</section>\n\n',
+    escape_strs=['\\', '*', '_', '#', '+', '-', '.', '!', '{', '}', '[', ']', '(', ')']
+)
 
 # Xmindファイル解析用
 PTNLV = [

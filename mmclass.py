@@ -1,53 +1,52 @@
 # -*- coding: utf-8 -*-
 """mmclass.py
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Tuple, Dict, Any, Optional
-from openpyxl.styles import PatternFill, Font
 
 @dataclass
 class USDMConfig:
     """USDM出力用設定
     """
-    excel_file_ext: str = '*.xlsx'
-    usdm_file_pfx: str = '_USDM.xlsx'
-    usdm_sheet: str = 'USDM'
-    tmpl_file: str = './templates/USDM_Template.xlsx'
-    tmpl_sheet: str = 'Template'
-    lv1_title_cell: str = 'B1'
-    row_start: int = 4
-    col_req: int = 2
-    col_sub: int = 3
-    col_grp: int = 4
-    col_reason: int = 5
-    col_remark: int = 7
-    col_spec: int = 5
-    col_module_start: int = 9
-    freeze_panes: str = 'F4'
-    prohibit_char: str = r"[ '*/:?[\]`’＊／：？［＼］￥]+"
-    sub_txt: str = '_'
-    cell_style: Dict[str, List[List[Any]]] = field(default_factory=dict)
+    excel_file_ext: str
+    usdm_file_pfx: str
+    usdm_sheet: str
+    tmpl_file: str
+    tmpl_sheet: str
+    lv1_title_cell: str
+    row_start: int
+    col_req: int
+    col_sub: int
+    col_grp: int
+    col_reason: int
+    col_remark: int
+    col_spec: int
+    col_module_start: int
+    freeze_panes: str
+    prohibit_char: str
+    sub_txt: str
+    cell_style: Dict[str, List[List[Any]]]
 
 @dataclass
 class WordConfig:
     """Word出力用設定
     """
-    tmpl_name: str = './templates/SpecTemplate.docx'
-    file_name: str = '機能仕様書_r0.docx'
-    max_head_lv: int = 4
-    head_lv_offset: int = 1
-    txt_remark: str = 'Normal' # 実際はUSDMcfgで定義されているが値が使われていない箇所がある
-    txt_reason: str = 'Normal'
+    tmpl_name: str
+    file_name: str
+    max_head_lv: int
+    head_lv_offset: int
+    txt_remark: str
+    txt_reason: str
 
 @dataclass
 class MdConfig:
     """Markdown出力用設定
     """
-    header: str = '<link rel="stylesheet" href="style.css" />\n\n'
-    section_remark: str = '<section class="remark">\n'
-    section_reason: str = '<section class="reason">\n'
-    sec_close: str = '</section>\n\n'
-    escape_strs: List[str] = field(default_factory=lambda: ['\\', '*', '_', '#', '+', '-', '.', '!', '{', '}', '[', ']', '(', ')'])
+    header: str
+    section_remark: str
+    section_reason: str
+    sec_close: str
+    escape_strs: List[str]
 
 @dataclass
 class MMNode:
