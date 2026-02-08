@@ -2,11 +2,11 @@
 
 ## 概要
 
-Mindmap (Xmind, FreePlane) から、USDM形式のExcel、仕様書形式のWord、およびMarkDown形式のドキュメントを自動生成するツールです。
+Mindmap (Xmind8, FreePlane) から、USDM形式のExcel、仕様書形式のWord、およびMarkDown形式のドキュメントを自動生成するツールです。
 
 ## 特徴
 
-- **複数のMindmap形式に対応**: Xmind (.xmind) および FreePlane (.mm) からデータを抽出可能。
+- **複数のMindmap形式に対応**: Xmind8 (.xmind) および FreePlane (.mm) からデータを抽出可能。
 - **3種類の出力形式**: 出力ファイルの拡張子 (.xlsx, .docx, .md) に応じて適切なフォーマットで出力。
 - **USDM出力**: 要件定義手法であるUSDM形式のExcelファイルを生成。
 - **Word出力**: テンプレートに基づいた仕様書の雛形を生成。
@@ -19,6 +19,13 @@ Python 3.12以上が必要です。必要なライブラリをインストール
 ```bash
 pip install openpyxl xmind-sdk python-docx
 ```
+
+## 検証環境
+
+以下の環境で動作を確認しています。
+
+- **OS**: Windows 11 (24H2)
+- **Python**: 3.12.3
 
 ## 利用方法
 
@@ -51,6 +58,8 @@ python mm2docs.py sample.xmind -t templates/SpecTemplate.docx -o sample_spec.doc
 
 ドラッグ＆ドロップで変換可能なバッチファイルも同梱しています。
 
+実行環境に合わせて編集して利用してください。
+
 - `convert_mm2USDM.bat`: USDM Excel形式へ変換
 - `convert_mm2doc.bat`: Word形式へ変換
 - `convert_mm2Md.bat`: Markdown形式へ変換
@@ -58,6 +67,11 @@ python mm2docs.py sample.xmind -t templates/SpecTemplate.docx -o sample_spec.doc
 ## 設定
 
 `mmconfig.py` および `mmclass.py` で、抽出ルール（正規表現）やExcelの書式、Wordのスタイルなどをカスタマイズできます。
+
+## ドキュメント
+
+- **[表記法・リファレンス](Notation_RequirementMindmap.md)**: Mindmapのタグ付けルールと、各フォーマットへの変換イメージ。
+- **[要件定義のプロセス](Concept_RequirementDefinition.md)**: Mindmapを使った分析からUSDM作成までの流れと、要件定義の考え方。
 
 ## ライセンス
 

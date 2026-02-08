@@ -1,10 +1,10 @@
 <map version="freeplane 1.12.15">
 <!--To view this file, download free mind mapping software Freeplane from https://www.freeplane.org -->
 <bookmarks/>
-<node TEXT="xx_開発要件定義" FOLDED="false" ID="ID_191153586" CREATED="1610381622013" MODIFIED="1767798971851" ICON_SIZE="36 pt" LINK="menuitem:_ExternalImageAddAction" STYLE="oval" CHILD_NODES_LAYOUT="TOPTOBOTTOM_RIGHT_CENTERED">
+<node TEXT="xx_開発要件定義" FOLDED="false" ID="ID_191153586" CREATED="1610381622013" MODIFIED="1768908094368" ICON_SIZE="0 pt" LINK="menuitem:_ExternalImageAddAction" STYLE="oval" CHILD_NODES_LAYOUT="TOPTOBOTTOM_RIGHT_CENTERED">
 <font NAME="SansSerif" SIZE="22"/>
-<hook NAME="MapStyle">
-    <properties edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff" show_icon_for_attributes="true" associatedTemplateLocation="template:/BuzanMap.mm" show_note_icons="true" fit_to_viewport="false" show_icons="BESIDE_NODES" show_tags="UNDER_NODES" showTagCategories="false"/>
+<hook NAME="MapStyle" zoom="0.82644624">
+    <properties edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff" show_icon_for_attributes="true" show_tags="UNDER_NODES" associatedTemplateLocation="template:/BuzanMap.mm" show_note_icons="true" fit_to_viewport="false" show_icons="BESIDE_NODES" showTagCategories="false"/>
     <tags category_separator="::"/>
 
 <map_styles>
@@ -157,7 +157,7 @@
 </node>
 <node TEXT="## その他課題" ID="ID_1362555323" CREATED="1767776522260" MODIFIED="1767776522260"/>
 </node>
-<node TEXT="要求仕様" POSITION="top_or_left" ID="ID_1611242608" CREATED="1767776710531" MODIFIED="1767776721342">
+<node TEXT="! 要求仕様" POSITION="top_or_left" ID="ID_1611242608" CREATED="1767776710531" MODIFIED="1768908111964">
 <edge COLOR="#007c7c"/>
 <node TEXT="# xxxx 大要求名称" ID="ID_404932851" CREATED="1767776730935" MODIFIED="1767776730935">
 <node TEXT="## 要求名称" ID="ID_867623006" CREATED="1767776730935" MODIFIED="1767776730935">
