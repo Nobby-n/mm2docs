@@ -2,15 +2,21 @@
 
 ## 概要
 
-Mindmap (Xmind8, FreePlane) から、USDM形式のExcel、仕様書形式のWord、およびMarkDown形式のドキュメントを自動生成するツールです。
+Mindmap (Xmind8, FreePlane) から、USDM形式のExcel、機能仕様書形式のWord、およびMarkDown形式のドキュメントを自動生成するツールです。
+
+Mindmapを起点に仕様書を作成する `mm2docs.py` を主軸とし、既存のUSDM資産を活用するための補助ツールとして以下を同梱しています。
+
+- **`USDM2docs.py`**: USDM形式のExcelファイルから、WordやMarkdown形式の仕様書を生成します。
+- **`USDM2mm.py`**: USDM形式のExcelファイルから、Mindmap（FreePlane/FreeMind形式）を生成（逆変換）します。
 
 ## 特徴
 
 - **複数のMindmap形式に対応**: Xmind8 (.xmind) および FreePlane (.mm) からデータを抽出可能。
 - **3種類の出力形式**: 出力ファイルの拡張子 (.xlsx, .docx, .md) に応じて適切なフォーマットで出力。
 - **USDM出力**: 要件定義手法であるUSDM形式のExcelファイルを生成。
-- **Word出力**: テンプレートに基づいた仕様書の雛形を生成。
-- **Markdown出力**: AIプロンプトやドキュメント管理に便利なMarkdown形式を生成。
+- **Word/Markdown出力**: テンプレートに基づいた仕様書や、AIプロンプトにも活用できるMarkdownを生成。
+- **USDMからの再変換**: `USDM2docs.py`を使い、手修正したUSDM ExcelからでもWordやMarkdownを再生成可能。
+- **Mindmapへの逆変換**: `USDM2mm.py`を使い、既存のUSDMをMindmapで可視化し、レビューや再編集を容易に。
 
 ## インストール
 
@@ -29,15 +35,15 @@ pip install openpyxl xmind-sdk python-docx
 
 ## 利用方法
 
-コマンドプロンプトから以下のように実行します。
+### 1. `mm2docs`: Mindmapからドキュメントを生成
 
-### 基本的な使い方
+#### 基本的な使い方
 
 ```bash
 python mm2docs.py [Mindmapファイルパス] -o [出力ファイルパス]
 ```
 
-### 出力形式の指定
+#### 出力形式の指定
 
 出力形式は `-o` オプションで指定する拡張子によって自動判別されます。
 
@@ -45,7 +51,7 @@ python mm2docs.py [Mindmapファイルパス] -o [出力ファイルパス]
 - `.docx`: Word形式
 - `.md`: Markdown形式
 
-### テンプレートの指定
+#### テンプレートの指定
 
 ExcelとWordの出力にはテンプレートファイルが必要です。
 
@@ -54,24 +60,81 @@ python mm2docs.py sample.xmind -t templates/USDM_Template.xlsx -o sample_USDM.xl
 python mm2docs.py sample.xmind -t templates/SpecTemplate.docx -o sample_spec.docx
 ```
 
-### バッチファイルでの利用
+#### バッチファイルでの利用
 
 ドラッグ＆ドロップで変換可能なバッチファイルも同梱しています。
-
-実行環境に合わせて編集して利用してください。
 
 - `convert_mm2USDM.bat`: USDM Excel形式へ変換
 - `convert_mm2doc.bat`: Word形式へ変換
 - `convert_mm2Md.bat`: Markdown形式へ変換
 
+### 2. `USDM2docs`:USDMファイルからWord、Markdownへの変換
+
+コマンドプロンプトから以下のように実行します。
+
+#### 基本的な使い方
+
+```bash
+python USDM2docs.py [USDMファイルパス] -o [出力ファイルパス]
+```
+
+#### 出力形式の指定
+
+出力形式は `-o` オプションで指定する拡張子によって自動判別されます。
+
+- `.docx`: Word形式
+- `.md`: Markdown形式
+
+#### テンプレートの指定
+
+Wordの出力にはテンプレートファイルが必要です。
+
+```bash
+python USDM2docs.py sample_USDM.xlsx -t templates/SpecTemplate.docx -o sample_spec.docx
+```
+
+#### バッチファイルでの利用
+
+ドラッグ＆ドロップで変換可能なバッチファイルも同梱しています。
+
+- `convert_USDM2doc.bat`: Word形式へ変換
+- `convert_USDM2Md.bat`: Markdown形式へ変換
+
+### 3. `USDM2mm`: USDMファイルからMindmap（Freemind形式）への逆変換
+
+コマンドプロンプトから以下のように実行します。
+
+#### 基本的な使い方
+
+```bash
+python USDM2mm.py [USDMファイルパス] -o [出力ファイルパス]
+```
+
+#### バッチファイルでの利用
+
+ドラッグ＆ドロップで変換可能なバッチファイルも同梱しています。
+
+- `convert_USDM2mm.bat`: USDMからFreeplane形式へ変換
+
 ## 設定
 
 `mmconfig.py` および `mmclass.py` で、抽出ルール（正規表現）やExcelの書式、Wordのスタイルなどをカスタマイズできます。
 
-## ドキュメント
+## Mindmapの表記法
 
-- **[表記法・リファレンス](Notation_RequirementMindmap.md)**: Mindmapのタグ付けルールと、各フォーマットへの変換イメージ。
-- **[要件定義のプロセス](Concept_RequirementDefinition.md)**: Mindmapを使った分析からUSDM作成までの流れと、要件定義の考え方。
+[HowToUse_mm2docs.md](HowToUse_mm2docs.md)参照
+
+## 要件定義の考え方
+
+[Concept_RequirementDefinition.md](Concept_RequirementDefinition.md)参照
+
+## サンプル
+
+`samples/` フォルダに、サンプルのMindmapと、それから出力したMarkdownファイルを格納しています。
+
+- [Xmind2USDM_リファクタリング要件定義.xmind](samples/Xmind2USDM_リファクタリング要件定義.xmind) (Xmind8形式)
+- [Xmind2USDM_リファクタリング要件定義.mm](samples/Xmind2USDM_リファクタリング要件定義.mm) (FreePlane/FreeMind形式)
+- [Xmind2USDM_リファクタリング要件定義_USDM.md](samples/Xmind2USDM_リファクタリング要件定義_USDM.md) (出力例)
 
 ## ライセンス
 
