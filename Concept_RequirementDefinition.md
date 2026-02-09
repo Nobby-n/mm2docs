@@ -54,4 +54,4 @@ Mindmapには「機能要件」だけでなく「非機能要件」も記述し�
 作成したMindmapは、ツール (`mm2docs`) を使用して変換します。
 Mindmap上で特定の記法（タグ）を用いることで、ツールが「要求」「仕様」「理由」などを判別し、適切なフォーマット（Excel, Word, Markdown）に出力します。
 
-具体的なMindmapの書き方については、Notation_RequirementMindmap.md を参照してください。
+具体的なMindmapの書き方については、[HowToUse_mm2docs.md](HowToUse_mm2docs.md) を参照してください。
