@@ -11,8 +11,8 @@ for %%A in (%*) do (
     for %%E in (.xmind .mm) do if /i "%%~xA"=="%%E" (
         REM アウトプットしたいフルパスをセットする
         REM %%~dA = ドライブ名, %%~pA = パス, %%~nA = ファイル名
-        echo "%%A" convert to "%%~dA%%~pA%%~nA_USDM.xlsx"
-        %PYPATH% %PYSCRIPT% %%A -t %TEMPLATE% -o "%%~dA%%~pA%%~nA_USDM.xlsx"
+        echo "%%A" convert to "%%~dpnA_USDM.xlsx"
+        %PYPATH% %PYSCRIPT% %%A -t %TEMPLATE% -o "%%~dpnA_USDM.xlsx"
     )
 )
 popd
