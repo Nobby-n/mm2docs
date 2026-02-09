@@ -206,22 +206,29 @@
                         <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVNOTEE</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">stcomment</span><span class="p">:</span>
                                 <span class="n">stcomment</span> <span class="o">=</span> <span class="kc">False</span>
-                            <span class="k">continue</span>
+                            <span class="k">break</span>
                         <span class="k">case</span><span class="w"> </span><span class="k">_</span> <span class="k">if</span> <span class="n">stcomment</span><span class="p">:</span>
-                            <span class="k">continue</span>
+                            <span class="k">break</span>
                         <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVNOTE</span><span class="p">:</span>
-                            <span class="k">continue</span>
+                            <span class="k">break</span>
                         <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVNOTES</span><span class="p">:</span>
                             <span class="k">if</span> <span class="ow">not</span> <span class="n">stcomment</span><span class="p">:</span>
                                 <span class="n">stcomment</span> <span class="o">=</span> <span class="kc">True</span>
-                            <span class="k">continue</span>
+                            <span class="k">break</span>
                         <span class="k">case</span> <span class="n">l</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV4</span><span class="p">:</span>
                             <span class="c1"># 見出しレベル1無しで下位が現れたら補完</span>
                             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV1</span><span class="p">:</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="s2">&quot;xxxx xxxx&quot;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV1</span><span class="p">))</span>
                             
                             <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">node_text</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
+                            
+                            <span class="c1"># レベル1の場合、キーワード(シート名用)が含まれている可能性があるため</span>
+                            <span class="c1"># Word/Markdown出力用にキーワードを除去したテキストも保持する</span>
+                            <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LV1</span><span class="p">:</span>
+                                <span class="n">_</span><span class="p">,</span> <span class="n">clean_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lv1_info</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">clean_text</span><span class="p">))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MMNode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
                         <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">:</span>
                             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
                                 <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">node_text</span>
@@ -458,7 +465,7 @@
                 <span class="k">match</span> <span class="n">node</span><span class="o">.</span><span class="n">level</span><span class="p">:</span>
                     <span class="k">case</span> <span class="n">l</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">max_head_lv</span><span class="p">:</span>
                         <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="c1"># 見出しの前に改行</span>
-                        <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">l</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">head_lv_offset</span><span class="p">)</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">add_heading</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">clean_text</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">l</span> <span class="o">+</span> <span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">head_lv_offset</span><span class="p">)</span>
                     <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREMARK</span><span class="p">:</span>
                         <span class="n">doc</span><span class="o">.</span><span class="n">add_paragraph</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">word_cfg</span><span class="o">.</span><span class="n">txt_remark</span><span class="p">)</span>
                     <span class="k">case</span> <span class="n">cfg</span><span class="o">.</span><span class="n">LVREASON</span><span class="p">:</span>
@@ -482,7 +489,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">md_text</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">md_cfg</span><span class="o">.</span><span class="n">header</span>
             <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escape_md</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_escape_md</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">clean_text</span><span class="p">)</span>
                 <span class="c1"># ノード内の改行を &lt;br /&gt; に変換</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;br /&gt;&#39;</span><span class="p">)</span>
                 

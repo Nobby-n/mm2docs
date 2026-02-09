@@ -1,7 +1,7 @@
-mm2docs module
+USDM2mm module
 ==============
 
-.. automodule:: mm2docs
+.. automodule:: USDM2mm
    :members:
    :show-inheritance:
    :undoc-members:

@@ -75,9 +75,8 @@
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;mmclass.py</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PatternFill</span><span class="p">,</span> <span class="n">Font</span>
 
 <div class="viewcode-block" id="USDMConfig">
 <a class="viewcode-back" href="../mmclass.html#mmclass.USDMConfig">[ドキュメント]</a>
@@ -85,24 +84,24 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">USDMConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;USDM出力用設定</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">excel_file_ext</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;*.xlsx&#39;</span>
-    <span class="n">usdm_file_pfx</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_USDM.xlsx&#39;</span>
-    <span class="n">usdm_sheet</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;USDM&#39;</span>
-    <span class="n">tmpl_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./templates/USDM_Template.xlsx&#39;</span>
-    <span class="n">tmpl_sheet</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Template&#39;</span>
-    <span class="n">lv1_title_cell</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;B1&#39;</span>
-    <span class="n">row_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">col_req</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">col_sub</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">col_grp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">col_reason</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">col_remark</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
-    <span class="n">col_spec</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">col_module_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span>
-    <span class="n">freeze_panes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;F4&#39;</span>
-    <span class="n">prohibit_char</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;[ &#39;*/:?[\]`’＊／：？［＼］￥]+&quot;</span>
-    <span class="n">sub_txt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span>
-    <span class="n">cell_style</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">excel_file_ext</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">usdm_file_pfx</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">usdm_sheet</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tmpl_file</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tmpl_sheet</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lv1_title_cell</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">row_start</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_req</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_sub</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_grp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_reason</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_remark</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_spec</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">col_module_start</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">freeze_panes</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">prohibit_char</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">sub_txt</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">cell_style</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span></div>
 
 
 <div class="viewcode-block" id="WordConfig">
@@ -111,12 +110,12 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">WordConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Word出力用設定</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tmpl_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./templates/SpecTemplate.docx&#39;</span>
-    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;機能仕様書_r0.docx&#39;</span>
-    <span class="n">max_head_lv</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">head_lv_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">txt_remark</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Normal&#39;</span> <span class="c1"># 実際はUSDMcfgで定義されているが値が使われていない箇所がある</span>
-    <span class="n">txt_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Normal&#39;</span></div>
+    <span class="n">tmpl_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">max_head_lv</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">head_lv_offset</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">txt_remark</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">txt_reason</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 <div class="viewcode-block" id="MdConfig">
@@ -125,11 +124,11 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">MdConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Markdown出力用設定</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">header</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
-    <span class="n">section_remark</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&lt;section class=&quot;remark&quot;&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="n">section_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&lt;section class=&quot;reason&quot;&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="n">sec_close</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&lt;/section&gt;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
-    <span class="n">escape_strs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">])</span></div>
+    <span class="n">header</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">section_remark</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">section_reason</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">sec_close</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">escape_strs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="MMNode">
@@ -140,7 +139,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">note</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+    <span class="n">clean_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">note</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_text</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clean_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span></div>
 
 
 </pre></div>

@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## [1.0.0] - 2026-02-09
+
+### Added
+
+- USDM形式のExcelからWord/Markdownを生成する `USDM2docs.py` を追加。
+- USDM形式のExcelからMindmap(.mm)を生成（逆変換）する `USDM2mm.py` を追加。
+- 上記スクリプトに対応するバッチファイル (`convert_USDM2doc.bat`, `convert_USDM2Md.bat`, `convert_USDM2mm.bat`) を追加。
+
+### Changed
+
+- `README.md` を大幅に更新し、ツール群全体の構成と各スクリプトの利用方法を明確化。
+- ドキュメントの構成を見直し、説明の分かりやすさを向上 (`Concept_RequirementDefinition.md`, `HowToUse_mm2docs.md`)。
+
 ## [0.9.2] - 2026-01-08
 
 ### Added

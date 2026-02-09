@@ -10,6 +10,8 @@ Welcome to mm2docs's documentation!
    mm2docs
    mmclass
    mmconfig
+   USDM2docs
+   USDM2mm
 
 
 Indices and tables
