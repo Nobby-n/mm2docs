@@ -127,22 +127,29 @@ class MMConverter:
                         case cfg.LVNOTEE:
                             if stcomment:
                                 stcomment = False
-                            continue
+                            break
                         case _ if stcomment:
-                            continue
+                            break
                         case cfg.LVNOTE:
-                            continue
+                            break
                         case cfg.LVNOTES:
                             if not stcomment:
                                 stcomment = True
-                            continue
+                            break
                         case l if l <= cfg.LV4:
                             # 見出しレベル1無しで下位が現れたら補完
                             if not self.nodes and l > cfg.LV1:
                                 self.nodes.append(MMNode("xxxx xxxx", cfg.LV1))
                             
                             text = match.group(2) if len(match.groups()) >= 2 else node_text
-                            self.nodes.append(MMNode(text, l))
+                            
+                            # レベル1の場合、キーワード(シート名用)が含まれている可能性があるため
+                            # Word/Markdown出力用にキーワードを除去したテキストも保持する
+                            if l == cfg.LV1:
+                                _, clean_text = self._get_lv1_info(text)
+                                self.nodes.append(MMNode(text, l, clean_text))
+                            else:
+                                self.nodes.append(MMNode(text, l))
                         case cfg.LVREASON:
                             if self.nodes:
                                 text = match.group(2) if len(match.groups()) >= 2 else node_text
@@ -371,7 +378,7 @@ class MMConverter:
                 match node.level:
                     case l if l <= cfg.word_cfg.max_head_lv:
                         doc.add_paragraph('') # 見出しの前に改行
-                        doc.add_heading(node.text, level=l + cfg.word_cfg.head_lv_offset)
+                        doc.add_heading(node.clean_text, level=l + cfg.word_cfg.head_lv_offset)
                     case cfg.LVREMARK:
                         doc.add_paragraph(node.text, style=cfg.word_cfg.txt_remark)
                     case cfg.LVREASON:
@@ -392,7 +399,7 @@ class MMConverter:
         try:
             md_text = cfg.md_cfg.header
             for node in self.nodes:
-                text = self._escape_md(node.text)
+                text = self._escape_md(node.clean_text)
                 # ノード内の改行を <br /> に変換
                 text = text.replace('\n', '<br />')
                 

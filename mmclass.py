@@ -54,5 +54,10 @@ class MMNode:
     """
     text: str
     level: int
+    clean_text: str = ""
     note: str = ""
+
+    def __post_init__(self):
+        if not self.clean_text:
+            self.clean_text = self.text
 
