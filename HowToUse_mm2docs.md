@@ -58,7 +58,7 @@ Wordのテンプレートの書式スタイルとして、「理由」、「備�
 
 ### Markdown転記例
 
-[Xmind2USDM_リファクタリング要件定義_USDM.md](samples/Xmind2USDM_リファクタリング要件定義_USDM.md)
+[Xmind2USDM_Refactoring_SRS.md](samples/Xmind2USDM_Refactoring_SRS.md)
 
 ## 要件定義の考え方
 
