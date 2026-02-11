@@ -132,9 +132,9 @@ python USDM2mm.py [USDMファイルパス] -o [出力ファイルパス]
 
 `samples/` フォルダに、サンプルのMindmapと、それから出力したMarkdownファイルを格納しています。
 
-- [Xmind2USDM_リファクタリング要件定義.xmind](samples/Xmind2USDM_リファクタリング要件定義.xmind) (Xmind8形式)
-- [Xmind2USDM_リファクタリング要件定義.mm](samples/Xmind2USDM_リファクタリング要件定義.mm) (FreePlane/FreeMind形式)
-- [Xmind2USDM_リファクタリング要件定義_USDM.md](samples/Xmind2USDM_リファクタリング要件定義_USDM.md) (出力例)
+- [Xmind2USDM_Refactoring_SRS.xmind](samples/Xmind2USDM_Refactoring_SRS.xmind) (Xmind8形式)
+- [Xmind2USDM_Refactoring_SRS.mm](samples/Xmind2USDM_Refactoring_SRS.mm) (FreePlane/FreeMind形式)
+- [Xmind2USDM_Refactoring_SRS.md](samples/Xmind2USDM_Refactoring_SRS.md) (出力例)
 
 ## ライセンス
 
