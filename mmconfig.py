@@ -61,7 +61,10 @@ usdm_cfg = USDMConfig(
                   [NONCOLOR, NONBOLD], [NONCOLOR, NONBOLD], [NONCOLOR, NONBOLD]],
         TXTREASON: [[NONCOLOR, NONBOLD], [NONCOLOR, NONBOLD], [NONCOLOR, NONBOLD], [REASONCOLOR, NONBOLD],
                     [REASONCOLOR, NONBOLD], [NONCOLOR, NONBOLD], [NONCOLOR, NONBOLD]]
-    }
+    },
+    img_title_cell='B2',
+    img_insert_cell='B4',
+    img_title_font=FBOLD
 )
 
 word_cfg = WordConfig(
@@ -78,7 +81,8 @@ md_cfg = MdConfig(
     section_remark='<section class="remark">\n',
     section_reason='<section class="reason">\n',
     sec_close='</section>\n\n',
-    escape_strs=['\\', '*', '_', '#', '+', '-', '.', '!', '{', '}', '[', ']', '(', ')']
+    escape_strs=['\\', '*', '_', '#', '+', '-', '.', '!', '{', '}', '[', ']', '(', ')'],
+    img_width='auto'
 )
 
 # Xmindファイル解析用
@@ -95,6 +99,10 @@ PTNLV = [
     [r'^((\s|\S)+)', LVSPEC],
 ]
 
+# 画像保存設定
+IMAGE_DIR = 'mm_images'
+IMAGE_FILENAME_PROHIBIT = r'[\\/:*?"<>|\r\n\t]'
+IMAGE_FILENAME_SUB = 'x'
+
 # USDMフォーマットチェック
 CHECKCELLS = ((3, 4, r'要求と仕様'), (3, 7, r'説明・備考'))
-

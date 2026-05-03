@@ -1,5 +1,30 @@
 # CHANGELOG
 
+# [1.1.0] - 2026-03-30
+
+### Added
+
+- Mindmap内の画像をドキュメントに転記する機能を追加。XMind (.xmind) および FreePlane (.mm) の両形式に対応。
+  - **USDM Excel**: 画像ごとに専用シートを作成し、タイトルと画像を配置。
+  - **Word**: 見出し直後または該当ノード位置に画像とキャプションを挿入。
+  - **Markdown**: `<img>` タグで画像を挿入（`width` 属性を `mmconfig.py` で変更可能）。
+- `USDM2docs.py` に画像対応を追加。USDM Excelから Word/Markdown 変換時、`mm_images/` フォルダの画像をノードに自動関連付け。フォルダが無い場合は Excel の画像シートから自動抽出するフォールバック機能付き。
+- `USDM2mm.py` に画像対応を追加。USDM Excelから FreePlane (.mm) 変換時、画像ノードを `richcontent` として出力し、`images/` フォルダに画像ファイルをコピー。
+- `mmclass.py` の `MMNode` に `image_path` フィールドを追加。
+- `mmconfig.py` に画像関連の設定を追加（`IMAGE_DIR`, `IMAGE_FILENAME_PROHIBIT`, `IMAGE_FILENAME_SUB`）。
+- `mmconfig.py` の `USDMConfig` に画像シートの設定を追加（`img_title_cell`, `img_insert_cell`, `img_title_font`）。
+- `mmconfig.py` の `MdConfig` に Markdown 画像の幅設定を追加（`img_width`、デフォルト `auto`）。
+
+### Changed
+
+- `mm2docs.py` の `_parse_raw_nodes` を拡張し、LV1 以外の全ノードレベル（LV2-LV4, LVREASON, LVREMARK, LVSPEC）で画像を関連付けられるように変更。
+- `USDM2docs.py` の `load_mm_data` にて、LV1 ノードのテキストにシート名由来のキーワードを含めるよう変更（画像マッチングに必要）。
+
+### Fixed
+
+- `mm2docs.py` にて、備考（`//`）テキストをUSDM Excel に転記する際、G列（備考列）の背景色が要求レベルの薄緑色になる不具合を修正。備考のスタイル指定に `TXTREMARK`（`cell_style` に存在しないキー）を使用していたため書式が適用されず、テンプレートのデフォルトスタイルがそのまま残っていた。正しいキー `TXTREASON` に修正し、元の `Xmind2USDM.py` と同じ動作に復元。
+- 同箇所にて、備考の書き込み行位置が1行ずれていた問題を修正（`rownum` のデクリメントをセル書き込みの前に移動）。
+
 ## [1.0.0] - 2026-02-09
 
 ### Added

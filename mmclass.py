@@ -26,6 +26,9 @@ class USDMConfig:
     prohibit_char: str
     sub_txt: str
     cell_style: Dict[str, List[List[Any]]]
+    img_title_cell: str
+    img_insert_cell: str
+    img_title_font: Any
 
 @dataclass
 class WordConfig:
@@ -47,6 +50,7 @@ class MdConfig:
     section_reason: str
     sec_close: str
     escape_strs: List[str]
+    img_width: str
 
 @dataclass
 class MMNode:
@@ -56,6 +60,7 @@ class MMNode:
     level: int
     clean_text: str = ""
     note: str = ""
+    image_path: str = ""
 
     def __post_init__(self):
         if not self.clean_text:

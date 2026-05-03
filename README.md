@@ -17,13 +17,14 @@ Mindmapを起点に仕様書を作成する `mm2docs.py` を主軸とし、既�
 - **Word/Markdown出力**: テンプレートに基づいた仕様書や、AIプロンプトにも活用できるMarkdownを生成。
 - **USDMからの再変換**: `USDM2docs.py`を使い、手修正したUSDM ExcelからでもWordやMarkdownを再生成可能。
 - **Mindmapへの逆変換**: `USDM2mm.py`を使い、既存のUSDMをMindmapで可視化し、レビューや再編集を容易に。
+- **画像転記**: Mindmapノードに添付された画像を自動抽出し、各出力形式に挿入。USDM Excel間の逆変換でも画像を保持。
 
 ## インストール
 
 Python 3.12以上が必要です。必要なライブラリをインストールしてください。
 
 ```bash
-pip install openpyxl xmind-sdk python-docx
+pip install openpyxl xmind-sdk python-docx Pillow
 ```
 
 ## 検証環境
@@ -115,6 +116,15 @@ python USDM2mm.py [USDMファイルパス] -o [出力ファイルパス]
 ドラッグ＆ドロップで変換可能なバッチファイルも同梱しています。
 
 - `convert_USDM2mm.bat`: USDMからFreeplane形式へ変換
+### 画像転記
+
+Mindmapノードに添付された画像を自動的に抽出し、出力ドキュメントに挿入します。
+
+- 抽出した画像は Mindmapファイルと同じフォルダの `mm_images/` に PNG 形式で保存されます。
+- **USDM Excel**: 画像ごとに専用シートを作成（タイトルセル・挿入セルは `mmconfig.py` で設定可能）。
+- **Word**: 該当ノードの位置に画像とキャプションを挿入。
+- **Markdown**: `<img>` タグで挿入。`width` 属性は `mmconfig.py` の `md_cfg.img_width` で変更可能（デフォルト: `auto`）。
+- **USDM → Word/Markdown/FreePlane の逆変換** (`USDM2docs.py`, `USDM2mm.py`) でも画像を保持します。`mm_images/`（FreePlane用は `images/`）フォルダが存在しない場合は、USDM Excel の画像シートから自動抽出します。
 
 ## 設定
 

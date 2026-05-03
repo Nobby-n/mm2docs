@@ -9,12 +9,14 @@ python USDM2mm.py [USDMファイルパス] -o [出力ファイルパス]
 """
 import os
 import sys
+import shutil
 import argparse
-import openpyxl
 import xml.etree.ElementTree as ET
+
 import mmconfig as cfg
 from mmclass import MMNode
 from USDM2docs import USDMConverter
+
 
 class USDM2MMConverter(USDMConverter):
     """USDM Excelデータを読み取り、Freeplane形式に変換するクラス
@@ -34,6 +36,13 @@ class USDM2MMConverter(USDMConverter):
         # 階層管理用のスタック
         # [node_object, level]
         stack = [[root_node, 0]]
+
+        output_dir = os.path.dirname(os.path.abspath(self.output))
+        images_dir = os.path.join(output_dir, 'images')
+        has_images = any(
+            n.image_path and os.path.exists(n.image_path) for n in self.nodes)
+        if has_images:
+            os.makedirs(images_dir, exist_ok=True)
 
         for node in self.nodes:
             # タグの付与
@@ -68,14 +77,25 @@ class USDM2MMConverter(USDMConverter):
                 stack.pop()
             
             parent = stack[-1][0]
-            new_node_text = tag + node.text
-            new_node = ET.SubElement(parent, 'node', TEXT=new_node_text)
+            text_for_node = node.clean_text if node.level == cfg.LV1 else node.text
+            new_node = ET.SubElement(parent, 'node', TEXT=tag + text_for_node)
             
             # 階層構造を持つレベル（LV1-LV4）のみスタックに積む
             if node.level <= cfg.LV4:
                 stack.append([new_node, target_level])
 
-        # XMLの書き出し
+            if node.image_path and os.path.exists(node.image_path):
+                img_filename = os.path.basename(node.image_path)
+                shutil.copy2(node.image_path,
+                             os.path.join(images_dir, img_filename))
+                img_child = ET.SubElement(new_node, 'node')
+                rc = ET.SubElement(img_child, 'richcontent', TYPE='NODE')
+                html_el = ET.SubElement(rc, 'html')
+                ET.SubElement(html_el, 'head')
+                body_el = ET.SubElement(html_el, 'body')
+                ET.SubElement(body_el, 'img', src=f'images/{img_filename}')
+                print(f"  画像出力: images/{img_filename}")
+
         try:
             tree = ET.ElementTree(map_root)
             # インデントを整える（Python 3.9+）
@@ -85,6 +105,7 @@ class USDM2MMConverter(USDMConverter):
         except Exception as e:
             print(f"Freeplane出力中にエラーが発生しました: {e}")
             return False
+
 
 def main():
     parser = argparse.ArgumentParser(description='USDM to Freeplane Converter')
